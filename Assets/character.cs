@@ -4,25 +4,41 @@ using UnityEngine;
 
 public class character : MonoBehaviour
 {
-    // Start is called before the first frame update
+    Rigidbody m_Rigidbody;
+    float m_Speed;
+
     void Start()
     {
-        
+        //Fetch the Rigidbody component you attach from your GameObject
+        m_Rigidbody = GetComponent<Rigidbody>();
+        //Set the speed of the GameObject
+        m_Speed = 10.0f;
     }
 
-    public float speed = 2f;
-
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKey("w"))
         {
-            transform.position += new Vector3( 0, speed * Time.deltaTime, 0);
-        }
-        if (Input.GetKey("s"))
-        {
-            transform.position -= new Vector3(0, speed / 2 * Time.deltaTime, 0);
+            //Move the Rigidbody forwards constantly at speed you define (the blue arrow axis in Scene view)
+            m_Rigidbody.velocity = transform.forward * m_Speed;
         }
 
+        if (Input.GetKey("s"))
+        {
+            //Move the Rigidbody backwards constantly at the speed you define (the blue arrow axis in Scene view)
+            m_Rigidbody.velocity = -transform.forward * m_Speed;
+        }
+
+        if (Input.GetKey("a"))
+        {
+            //Rotate the sprite about the Y axis in the positive direction
+            transform.Rotate(new Vector3(0, 0, 1) * Time.deltaTime * m_Speed, Space.World);
+        }
+
+        if (Input.GetKey("d"))
+        {
+            //Rotate the sprite about the Y axis in the negative direction
+            transform.Rotate(new Vector3(0, 0, -1) * Time.deltaTime * m_Speed, Space.World);
+        }
     }
 }
