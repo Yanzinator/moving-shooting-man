@@ -5,42 +5,47 @@ using UnityEngine;
 public class character : MonoBehaviour
 {
     Rigidbody m_Rigidbody;
-    public float m_Speed;
-    public float r_Speed;
+    public float movementSpeed;
+    public float rotationSpeed;
 
     void Start()
     {
-        //Fetch the Rigidbody component you attach from your GameObject
+        //Fetches the Rigidbody component you attach from your GameObject
         m_Rigidbody = GetComponent<Rigidbody>();
-        //Set the speed of the GameObject
-        m_Speed = 3.0f;
-        r_Speed = 10.0f;
+        //Sets the speed of the GameObject
+        movementSpeed = 3.0f;
+        rotationSpeed = 10.0f;
     }
 
-    void Update()
+    void Move()
     {
         if (Input.GetKey("w"))
         {
             //Move the Rigidbody forwards constantly at speed you define (the blue arrow axis in Scene view)
-            transform.position += transform.up * Time.deltaTime * m_Speed;
+            transform.position += transform.up * Time.deltaTime * movementSpeed;
         }
 
         if (Input.GetKey("s"))
         {
             //Move the Rigidbody backwards constantly at the speed you define (the blue arrow axis in Scene view)
-            transform.position -= transform.up * Time.deltaTime * m_Speed;
+            transform.position -= transform.up * Time.deltaTime * movementSpeed;
         }
 
         if (Input.GetKey("a"))
         {
             //Rotate the sprite about the Y axis in the positive direction
-            transform.Rotate(new Vector3(0, 0, 5) * Time.deltaTime * r_Speed, Space.World);
+            transform.Rotate(new Vector3(0, 0, 5) * Time.deltaTime * rotationSpeed, Space.World);
         }
 
         if (Input.GetKey("d"))
         {
             //Rotate the sprite about the Y axis in the negative direction
-            transform.Rotate(new Vector3(0, 0, -5) * Time.deltaTime * r_Speed, Space.World);
+            transform.Rotate(new Vector3(0, 0, -5) * Time.deltaTime * rotationSpeed, Space.World);
         }
+    }
+    
+    void Update()
+    {
+        Move();
     }
 }
