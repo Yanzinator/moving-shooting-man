@@ -9,6 +9,7 @@ public class Bullet
     public float Rotation;
     public float Velocity;
     public Sprite sprite;
+    public int team;
 
 
 

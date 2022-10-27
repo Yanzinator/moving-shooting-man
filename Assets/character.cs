@@ -20,37 +20,138 @@ public class character : MonoBehaviour
         //Sets the speed of the GameObject
         movementSpeed = 3.0f;
         rotationSpeed = 10.0f;
+        //creates a gameobject for rotation
+        GameObject rotationGoal = new GameObject("PlayerRotationGoal");
     }
 
+
+
+    float rotationz;
     void Move()
     {
+        int presses = 0;
+        char direction = 'N';
+        //rotates character
+        //up
         if (Input.GetKey("w"))
         {
-            //Move the Rigidbody forwards constantly at speed you define (the blue arrow axis in Scene view)
+
+            //Rotates
+            direction = 'U';
+            rotationz = 0;
+            presses++;
+        }
+        //down
+        if (Input.GetKey("s"))
+        {
+            //Rotates
+            if (presses == 0)
+            {
+                direction = 'D';
+                rotationz = 180;
+                presses++;
+            }
+            else
+            {
+                direction = 'N';
+                presses--;
+            }
+        }
+        //right
+        if (Input.GetKey("a"))
+        {
+
+            //Rotates
+
+            if (presses == 0)
+            {
+                rotationz = 90;
+                direction = 'R';
+            }
+            else if (presses == 1)
+            {
+                if (direction == 'U')
+                {
+                    rotationz += 45;
+                }
+                else if (direction == 'D')
+                {
+                    rotationz -= 45;
+                }
+                else
+                {
+                    Debug.LogError("direction got fucked at right");
+                }
+            }
+            else
+            {
+                Debug.LogError("Too many presses at right");
+            }
+            presses++;
+        }
+        //left
+        if (Input.GetKey("d"))
+        {
+            //Rotates
+            if (presses == 0)
+            {
+                rotationz = 270;
+                presses++;
+            }
+            else if (presses == 1)
+            {
+                if (direction == 'N')
+                {
+                    presses--;
+                    rotationz = 0;
+                }
+                else if (direction == 'U')
+                {
+                    rotationz -= 45;
+                }
+                else if (direction == 'D')
+                {
+                    rotationz += 45;
+                }
+                else
+                {
+                    Debug.LogError("direction got fucked at left with 1 press");
+                }
+            }
+            else if (presses == 2)
+            {
+                if (direction == 'U')
+                {
+                    rotationz -= 45;
+                }
+                else if (direction == 'D')
+                {
+                    rotationz += 45;
+                }
+                else
+                {
+                    Debug.LogError("direction got fucked at left with 2 presses");
+                }
+            }
+            else
+            {
+                Debug.LogError("too many presses at left");
+            }
+
+        }
+        //Rotates the character based on movement
+        GameObject rotationgoal = GameObject.Find("PlayerRotationGoal");
+        rotationgoal.transform.eulerAngles = new Vector3(0, 0, rotationz);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotationgoal.transform.rotation, Time.deltaTime * rotationSpeed);
+
+        //moves character
+        if (presses != 0) {
             transform.position += transform.up * Time.deltaTime * movementSpeed;
         }
 
-        if (Input.GetKey("s"))
-        {
-            //Move the Rigidbody backwards constantly at the speed you define (the blue arrow axis in Scene view)
-            transform.position -= transform.up * Time.deltaTime * movementSpeed;
-        }
-
-        if (Input.GetKey("a"))
-        {
-            //Rotate the sprite about the Y axis in the positive direction
-            transform.Rotate(new Vector3(0, 0, 5) * Time.deltaTime * rotationSpeed, Space.World);
-        }
-
-        if (Input.GetKey("d"))
-        {
-            //Rotate the sprite about the Y axis in the negative direction
-            transform.Rotate(new Vector3(0, 0, -5) * Time.deltaTime * rotationSpeed, Space.World);
-        }
     }
 
-    float cooldown = 0;
-
+    float cooldown = 100;
     void Shoot()
     {
         cooldown += Time.deltaTime;
@@ -63,10 +164,13 @@ public class character : MonoBehaviour
             bullet.yPosition = transform.position.y;
             bullet.Rotation = transform.eulerAngles.z;
             bullet.Velocity = bulletVelocity;
+            bullet.team = 1;
             bullet.Create();
+            
             cooldown = 0;
         }
     }
+
     
     void Update()
     {
